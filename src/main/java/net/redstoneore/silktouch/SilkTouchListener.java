@@ -2,6 +2,8 @@ package net.redstoneore.silktouch;
 
 import java.util.Optional;
 
+import org.spongepowered.api.CatalogTypes;
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.block.BlockSnapshot;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.data.manipulator.mutable.item.EnchantmentData;
@@ -16,6 +18,7 @@ import org.spongepowered.api.event.block.ChangeBlockEvent;
 import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.event.cause.entity.spawn.EntitySpawnCause;
 import org.spongepowered.api.event.cause.entity.spawn.SpawnTypes;
+import org.spongepowered.api.event.filter.cause.First;
 import org.spongepowered.api.item.Enchantments;
 import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.inventory.ItemStack;
@@ -29,10 +32,7 @@ public class SilkTouchListener {
 	}
 	
 	@Listener
-	public void onBreakBlock(ChangeBlockEvent.Break event) {
-		if ( ! event.getCause().first(Player.class).isPresent()) return;
-		
-		Player player = event.getCause().first(Player.class).get();
+	public void onBreakBlock(ChangeBlockEvent.Break event, @First Player player) {
 		
 		// Don't drop anything if we're in creative mode
 		if (player.gameMode().get() == GameModes.CREATIVE) return;
@@ -68,16 +68,19 @@ public class SilkTouchListener {
 						return;
 					}
 				} 
-								
+				
+				// Find the drop
 				ItemType itemType = null;
 				
-				Optional<ItemType> isItemType = block.getState().getType().getItem();
-				if (isItemType.isPresent()) {
-					itemType = isItemType.get();
+				Optional<ItemType> oItemType = Sponge.getRegistry().getType(CatalogTypes.ITEM_TYPE, block.getState().getType().getId());			
+				if (oItemType.isPresent()) {
+					itemType = oItemType.get();
 				} else {
-					itemType = SilkTouch.get().findDropFor(block.getState().getType());
+					if (block.getState().getType().getItem().isPresent()) {
+						itemType = block.getState().getType().getItem().get();
+					}
 				}
-				
+								
 				// Create the drop
 				ItemStack itemDropping = ItemStack.of(itemType, 1);
 				Optional<Entity> optional = player.getLocation().getExtent().createEntity(EntityTypes.ITEM, block.getLocation().get().getPosition());
