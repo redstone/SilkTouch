@@ -7,6 +7,8 @@ import java.util.List;
 import org.spongepowered.api.block.BlockType;
 import org.spongepowered.api.block.BlockTypes;
 
+import com.google.common.collect.Lists;
+
 import net.redstoneore.rson.Rson;
 
 public class Config extends Rson<Config> {
@@ -23,7 +25,7 @@ public class Config extends Rson<Config> {
 	
 	public Boolean requirePermission = false;
 	
-	public List<BlockType> enableSilkTouchFor = Lists.toList(BlockType.class,
+	public List<BlockType> enableSilkTouchFor = Lists.newArrayList(
 		BlockTypes.MOB_SPAWNER
 	);
 	
