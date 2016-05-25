@@ -1,0 +1,41 @@
+plugins {
+	id "java"
+	id "org.spongepowered.plugin" version "0.5.2"
+	id "com.github.johnrengelman.shadow" version "1.2.3"
+}
+	
+repositories {
+	mavenCentral()
+	maven {
+		name = "sponge"
+		url = "http://repo.spongepowered.org/maven"
+	}
+}
+
+dependencies {
+	compile group: "org.spongepowered", name: "spongeapi", version: project.property("apiversion")
+	compile files("lib/Rson.jar")
+}
+
+group = project.property("groupid")
+version = project.property("version")
+description = "Make Silk Touch work with any block type"
+
+sponge {
+	plugin {
+		meta {
+			id = project.property("groupid")
+			name = "SilkTouch"
+			version = project.property("version")
+			description = "Make Silk Touch work with any block type"
+		}
+	}
+}
+
+shadowJar {	
+	dependencies {
+		include(dependency(files("lib/Rson.jar")))
+		
+		relocate "net.redstoneore.rson", "net.redstoneore.silktouch.lib.rson"
+	}
+}
