@@ -62,7 +62,7 @@ public class SilkTouchListener {
 				if (Config.get().requirePermission) {
 					String name = block.getState().getType().getName();
 					
-					if (( ! player.hasPermission("silktouch." + name) ) ||
+					if (( ! player.hasPermission("silktouch." + name) ) &&
 						( name.contains(":") && ! player.hasPermission("silktouch." + name.split(":")[1]))
 					) {
 						return;
