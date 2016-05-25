@@ -18,7 +18,7 @@ import org.spongepowered.api.event.block.ChangeBlockEvent;
 import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.event.cause.entity.spawn.EntitySpawnCause;
 import org.spongepowered.api.event.cause.entity.spawn.SpawnTypes;
-import org.spongepowered.api.event.filter.cause.First;
+import org.spongepowered.api.event.filter.cause.Root;
 import org.spongepowered.api.item.Enchantments;
 import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.inventory.ItemStack;
@@ -32,7 +32,7 @@ public class SilkTouchListener {
 	}
 	
 	@Listener
-	public void onBreakBlock(ChangeBlockEvent.Break event, @First Player player) {
+	public void onBreakBlock(ChangeBlockEvent.Break event, @Root Player player) {
 		
 		// Don't drop anything if we're in creative mode
 		if (player.gameMode().get() == GameModes.CREATIVE) return;
