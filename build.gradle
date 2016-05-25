@@ -1,7 +1,11 @@
+import org.apache.tools.ant.filters.*
+
 plugins {
 	id "java"
 	id "org.spongepowered.plugin" version "0.5.2"
 	id "com.github.johnrengelman.shadow" version "1.2.3"
+    id "com.jfrog.bintray" version "1.5"
+    id "maven"
 }
 	
 repositories {
@@ -33,9 +37,73 @@ sponge {
 }
 
 shadowJar {	
+	baseName = "SilkTouch"
+	archiveName = "${baseName}-${version}.jar"
+	
 	dependencies {
 		include(dependency(files("lib/Rson.jar")))
 		
 		relocate "net.redstoneore.rson", "net.redstoneore.silktouch.lib.rson"
+	}
+}
+
+// ----------------------------------------
+// BINTRAY
+// ----------------------------------------
+
+// jCenter requires a pom.xml file
+task createPom << {
+    pom {
+        project {
+            groupId project.property("groupid")
+            artifactId "silktouch"
+            version project.property("version")
+            inceptionYear "2016"
+
+            licenses {
+                license {
+                    name "GNU General Public License, version 3 (GPL-3.0)"
+                    url "https://opensource.org/licenses/GPL-3.0"
+                    distribution "repo"
+                }
+            }
+        }
+    }.writeTo("$buildDir/libs/pom.xml")
+}
+
+// Create sources jar
+task sourcesJar(type: Jar, dependsOn: classes) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+// Create javadoc
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+// Deploy to bintray
+bintray {
+	user = project.hasProperty("bintrayUser") ? project.property("bintrayUser") : System.getenv("BINTRAY_USER")
+	key = project.hasProperty("bintrayApiKey") ? project.property("bintrayApiKey") : System.getenv("BINTRAY_API_KEY")
+    filesSpec {
+		from "build/libs"
+		into "."
+	}
+	pkg {
+		repo = "maven"
+		name = "SilkTouch"
+		desc = ""
+        userOrg = "redstoneore"
+		licenses = ["GPL-3.0"]
+		vcsUrl = "https://github.com/MarkehMe/SilkTouch.git"
+		publicDownloadNumbers = false
+		version {
+			name = "SilkTouch-" + project.property("version");
+			desc = "Make Silk Touch work with any block type"
+			vcsTag = project.property("version")
+			attributes = ["gradle-plugin": "com.use.less:com.use.less.gradle:gradle-useless-plugin"]
+		}
 	}
 }
