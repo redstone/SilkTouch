@@ -6,7 +6,7 @@ build:
         code: export JAVA_OPTS="-XX:MaxPermSize=512m -XX:+CMSClassUnloadingEnabled -XX:+HeapDumpOnOutOfMemoryError -Xmx1024m"
     - script:
         name: Run gradle
-        code: ./gradlew -Sq --parallel --project-cache-dir=$WERCKER_CACHE_DIR clean build shadowJar
+        code: gradle -Sq --parallel --project-cache-dir=$WERCKER_CACHE_DIR clean build shadowJar
     - script:
         name: Archive artifacts
         code: cp build/libs/* $WERCKER_REPORT_ARTIFACTS_DIR
