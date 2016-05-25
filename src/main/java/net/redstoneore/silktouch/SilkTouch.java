@@ -2,7 +2,6 @@ package net.redstoneore.silktouch;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Optional;
 
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.block.BlockType;
@@ -28,6 +27,9 @@ public class SilkTouch {
 	@ConfigDir(sharedRoot = false)
 	private Path privateConfigDir;
 	
+	@Inject
+	private PluginContainer plugin;
+	
 	@Listener
 	public void enable(GameInitializationEvent event) {
 		try {
@@ -38,18 +40,12 @@ public class SilkTouch {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+				
 		Sponge.getEventManager().registerListeners(this, SilkTouchListener.get());
 	}
 	
 	public PluginContainer getPlugin() {
-		Optional<PluginContainer> optional = Sponge.getPluginManager().fromInstance(this);
-		
-		if (optional.isPresent()) {
-			return optional.get();
-		}
-		
-		return null;
+		return this.plugin;
 	}
 	
 	public Path getConfigDirectory() {
