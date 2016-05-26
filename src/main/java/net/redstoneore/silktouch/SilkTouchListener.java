@@ -62,11 +62,8 @@ public class SilkTouchListener {
 				if (Config.get().requirePermission) {
 					String name = block.getState().getType().getName();
 					
-					if (( ! player.hasPermission("silktouch." + name) ) &&
-						( name.contains(":") && ! player.hasPermission("silktouch." + name.split(":")[1]))
-					) {
-						return;
-					}
+					if (( ! player.hasPermission("silktouch." + name))) return;
+					
 				} 
 				
 				// Find the drop
@@ -89,6 +86,13 @@ public class SilkTouchListener {
 					Item item = (Item) optional.get();
 					item.offer(Keys.REPRESENTED_ITEM, itemDropping.createSnapshot());
 					
+					/*
+					// TODO: store NBT data for spawners, chests, etc, if configured
+					if (Config.get().enableNBTStoringFor.contains(block.getState().getType())) {
+						
+					}
+					*/
+					
 					// And drop it
 					block.getLocation().get().getExtent().spawnEntity(
 						item,
@@ -100,6 +104,11 @@ public class SilkTouchListener {
 				}
 			}
 		});
+	}
+	
+	@Listener
+	public void onPlaceBlock(ChangeBlockEvent.Place event, @Root Player player) {
+		// TODO: load NBT data
 	}
 	
 }
