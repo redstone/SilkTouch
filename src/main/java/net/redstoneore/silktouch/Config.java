@@ -29,4 +29,8 @@ public class Config extends Rson<Config> {
 		BlockTypes.MOB_SPAWNER
 	);
 	
+	public List<BlockType> enableNBTStoringFor = Lists.newArrayList(
+		BlockTypes.MOB_SPAWNER
+	);
+	
 }
