@@ -14,6 +14,10 @@ import net.redstoneore.silktouch.SilkTouch;
 
 public class Config extends Rson<Config> {
 
+	// ----------------------------------------
+	// SINGLETON & CONSTRUCT
+	// ----------------------------------------
+	
 	private static transient Config i;
 	public static Config get() {
 		if (i == null) {
@@ -24,6 +28,10 @@ public class Config extends Rson<Config> {
 	}
 	public Config() { }
 	
+	// ----------------------------------------
+	// FIELDS
+	// ----------------------------------------
+	
 	public Boolean requirePermission = false;
 	
 	public Boolean allowChestAsBackpack = false;
@@ -33,5 +41,5 @@ public class Config extends Rson<Config> {
 	public List<BlockType> enableSilkTouchFor = Lists.newArrayList(
 		BlockTypes.MOB_SPAWNER
 	);
-	
+		
 }
