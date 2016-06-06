@@ -1,4 +1,4 @@
-package net.redstoneore.silktouch;
+package net.redstoneore.silktouch.store;
 
 import java.nio.charset.Charset;
 import java.nio.file.Paths;
@@ -10,6 +10,7 @@ import org.spongepowered.api.block.BlockTypes;
 import com.google.common.collect.Lists;
 
 import net.redstoneore.rson.Rson;
+import net.redstoneore.silktouch.SilkTouch;
 
 public class Config extends Rson<Config> {
 
@@ -25,11 +26,11 @@ public class Config extends Rson<Config> {
 	
 	public Boolean requirePermission = false;
 	
-	public List<BlockType> enableSilkTouchFor = Lists.newArrayList(
-		BlockTypes.MOB_SPAWNER
-	);
+	public Boolean allowChestAsBackpack = false;
 	
-	public List<BlockType> enableNBTStoringFor = Lists.newArrayList(
+	public Boolean storeMobSpawnerType = true;
+	
+	public List<BlockType> enableSilkTouchFor = Lists.newArrayList(
 		BlockTypes.MOB_SPAWNER
 	);
 	
