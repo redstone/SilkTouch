@@ -99,7 +99,7 @@ bintray {
 		desc = ""
         userOrg = "redstoneore"
 		licenses = ["GPL-3.0"]
-		vcsUrl = "https://github.com/MarkehMe/SilkTouch.git"
+		vcsUrl = "https://github.com/redstone/SilkTouch.git"
 		publicDownloadNumbers = false
 		version {
 			name = "SilkTouch-" + project.property("version");
