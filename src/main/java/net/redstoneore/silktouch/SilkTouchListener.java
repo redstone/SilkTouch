@@ -5,6 +5,7 @@ import java.util.Optional;
 import org.spongepowered.api.CatalogTypes;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.block.BlockSnapshot;
+import org.spongepowered.api.block.BlockType;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.data.manipulator.mutable.item.EnchantmentData;
 import org.spongepowered.api.data.meta.ItemEnchantment;
@@ -23,13 +24,25 @@ import org.spongepowered.api.item.Enchantments;
 import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.inventory.ItemStack;
 
+import net.redstoneore.silktouch.criteriadrops.Criteria;
+import net.redstoneore.silktouch.criteriadrops.Criterias;
+import net.redstoneore.silktouch.store.Config;
+
 public class SilkTouchListener {
 
+	// ----------------------------------------
+	// SINGLETON
+	// ----------------------------------------
+	
 	private static SilkTouchListener i;
 	public static SilkTouchListener get() {
 		if (i == null) i = new SilkTouchListener();
 		return i;
 	}
+	
+	// ----------------------------------------
+	// METHODS
+	// ----------------------------------------
 	
 	@Listener
 	public void onBreakBlock(ChangeBlockEvent.Break event, @Root Player player) {
@@ -56,42 +69,47 @@ public class SilkTouchListener {
 		event.getTransactions().stream().forEach((trans) -> {
 			BlockSnapshot block = trans.getOriginal();
 			
-			// Check that it is
-			if (Config.get().enableSilkTouchFor.contains(block.getState().getType())) {
+			BlockType blockType = block.getState().getType();
+			
+			// Check that it is enabled 
+			if (Config.get().enableSilkTouchFor.contains(blockType)) {
 				
+				// do they required permissions?
 				if (Config.get().requirePermission) {
-					String name = block.getState().getType().getName();
+					String name = blockType.getName();
 					
 					if (( ! player.hasPermission("silktouch." + name))) return;
 					
-				} 
+				}
 				
 				// Find the drop
 				ItemType itemType = null;
 				
-				Optional<ItemType> oItemType = Sponge.getRegistry().getType(CatalogTypes.ITEM_TYPE, block.getState().getType().getId());			
+				Optional<ItemType> oItemType = Sponge.getRegistry().getType(CatalogTypes.ITEM_TYPE, blockType.getId());			
 				if (oItemType.isPresent()) {
 					itemType = oItemType.get();
 				} else {
-					if (block.getState().getType().getItem().isPresent()) {
-						itemType = block.getState().getType().getItem().get();
-					}
+					if (blockType.getItem().isPresent()) itemType = blockType.getItem().get();
 				}
-								
+				
+				// Be paranoid 
+				if (itemType == null) {
+					SilkTouch.get().warn("Could not find itemType for " + blockType.getId() + " - " + blockType.getName());
+					return;
+				}
+				
 				// Create the drop
 				ItemStack itemDropping = ItemStack.of(itemType, 1);
-				Optional<Entity> optional = player.getLocation().getExtent().createEntity(EntityTypes.ITEM, block.getLocation().get().getPosition());
-				if (optional.isPresent()) {
+				Optional<Entity> oItem = player.getLocation().getExtent().createEntity(EntityTypes.ITEM, block.getLocation().get().getPosition());
+				if (oItem.isPresent()) {
 					// Prepare the item 
-					Item item = (Item) optional.get();
+					Item item = (Item) oItem.get();
 					item.offer(Keys.REPRESENTED_ITEM, itemDropping.createSnapshot());
 					
-					/*
-					// TODO: store NBT data for spawners, chests, etc, if configured
-					if (Config.get().enableNBTStoringFor.contains(block.getState().getType())) {
-						
+					// Go over our criterias
+					for (Criteria criteria : Criterias.get().all()) {
+						item = criteria.alterItem(block, item);
 					}
-					*/
 					
 					// And drop it
 					block.getLocation().get().getExtent().spawnEntity(
@@ -104,11 +122,6 @@ public class SilkTouchListener {
 				}
 			}
 		});
-	}
-	
-	@Listener
-	public void onPlaceBlock(ChangeBlockEvent.Place event, @Root Player player) {
-		// TODO: load NBT data
 	}
 	
 }
