@@ -46,7 +46,7 @@ public class SilkTouch {
 			if ( ! Files.exists(privateConfigDir)) {
 				Files.createDirectories(privateConfigDir);
 			}
-			Config.get().load().save();
+			Config.get().load().save().update();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
