@@ -24,8 +24,8 @@ import org.spongepowered.api.item.Enchantments;
 import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.inventory.ItemStack;
 
-import net.redstoneore.silktouch.criteriadrops.Criteria;
-import net.redstoneore.silktouch.criteriadrops.Criterias;
+import net.redstoneore.silktouch.criteria.Criteria;
+import net.redstoneore.silktouch.criteria.Criterias;
 import net.redstoneore.silktouch.store.Config;
 
 public class SilkTouchListener {
@@ -99,12 +99,27 @@ public class SilkTouchListener {
 				}
 				
 				// Create the drop
-				ItemStack itemDropping = ItemStack.of(itemType, 1);
 				Optional<Entity> oItem = player.getLocation().getExtent().createEntity(EntityTypes.ITEM, block.getLocation().get().getPosition());
 				if (oItem.isPresent()) {
 					// Prepare the item 
 					Item item = (Item) oItem.get();
-					item.offer(Keys.REPRESENTED_ITEM, itemDropping.createSnapshot());
+					item.offer(Keys.REPRESENTED_ITEM, ItemStack.of(itemType, 1).createSnapshot());
+					item.offer(Keys.ITEM_BLOCKSTATE, block.getState()); // copy the state
+					
+					// Copy Lore
+					if (block.get(Keys.ITEM_LORE).isPresent()) {
+						item.offer(Keys.ITEM_LORE, block.get(Keys.ITEM_LORE).get());
+					}
+					
+					// Copy Enchantments
+					if (block.get(Keys.ITEM_ENCHANTMENTS).isPresent()) {
+						item.offer(Keys.ITEM_ENCHANTMENTS, block.get(Keys.ITEM_ENCHANTMENTS).get()); 
+					}
+					
+					// Copy Durability
+					if (block.get(Keys.ITEM_DURABILITY).isPresent()) {
+						item.offer(Keys.ITEM_DURABILITY, block.get(Keys.ITEM_DURABILITY).get()); 
+					}
 					
 					// Go over our criterias
 					for (Criteria criteria : Criterias.get().all()) {
