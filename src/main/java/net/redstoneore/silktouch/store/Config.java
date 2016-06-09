@@ -10,7 +10,7 @@ import org.spongepowered.api.block.BlockTypes;
 import com.google.common.collect.Lists;
 
 import net.redstoneore.rson.Rson;
-import net.redstoneore.rson.tasks.WatchTask;
+import net.redstoneore.rson.tasks.identifiers.WatchTask;
 import net.redstoneore.silktouch.SilkTouch;
 import net.redstoneore.silktouch.criteria.Criterias;
 import net.redstoneore.silktouch.criteria.backpack.CriteriaBackpack;
@@ -52,6 +52,13 @@ public class Config extends Rson<Config> {
 	
 	@WatchTask
 	public void update() {
+		try {
+			// Lets try and load our new config, since theres been a file change
+			this.load();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 		// If the Backpack option is enabled, but there is no criteria for it - add it 
 		if (this.allowChestAsBackpack && ! Criterias.get().all().contains(CriteriaBackpack.get())) {
 			Criterias.get().addCriteria(CriteriaBackpack.get());
