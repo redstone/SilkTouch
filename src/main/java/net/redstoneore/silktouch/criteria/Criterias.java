@@ -1,4 +1,4 @@
-package net.redstoneore.silktouch.criteriadrops;
+package net.redstoneore.silktouch.criteria;
 
 import java.util.ArrayList;
 import java.util.List;

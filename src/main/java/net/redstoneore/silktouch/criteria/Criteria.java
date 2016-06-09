@@ -1,4 +1,4 @@
-package net.redstoneore.silktouch.criteriadrops;
+package net.redstoneore.silktouch.criteria;
 
 import org.spongepowered.api.block.BlockSnapshot;
 import org.spongepowered.api.entity.Item;
