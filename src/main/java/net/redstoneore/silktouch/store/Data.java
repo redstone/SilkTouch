@@ -4,12 +4,10 @@ import java.nio.charset.Charset;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
-
-import org.spongepowered.api.item.inventory.Inventory;
 
 import net.redstoneore.rson.Rson;
 import net.redstoneore.silktouch.SilkTouch;
+import net.redstoneore.silktouch.store.elements.Backpack;
 
 public class Data extends Rson<Data> {
 	
@@ -32,26 +30,26 @@ public class Data extends Rson<Data> {
 	// ----------------------------------------
 	
 	// backpack inventories, these are individual chest blocks
-	private Map<UUID, Inventory> backpacks = new HashMap<UUID, Inventory>();
+	private Map<String, Backpack> backpacks = new HashMap<String, Backpack>();
 
 	// ----------------------------------------
 	// BACKPACK METHODS
 	// ----------------------------------------
 
-	public void backpackStore(UUID chestUUID, Inventory inventory) {
-		this.backpacks.put(chestUUID, inventory);
+	public void backpackStore(String backpackId, Backpack inventory) {
+		this.backpacks.put(backpackId, inventory);
 	}
 	
-	public Boolean backpackExists(UUID chestUUID) {
-		return this.backpacks.containsKey(chestUUID);
+	public Boolean backpackExists(String backpackId) {
+		return this.backpacks.containsKey(backpackId);
 	}
 	
-	public void backpackCleanupData(UUID chestUUID) {
-		this.backpacks.remove(chestUUID);
+	public void backpackCleanupData(String backpackId) {
+		this.backpacks.remove(backpackId);
 	}
 	
-	public Inventory backpackGet(UUID chestUUID) {
-		return this.backpacks.get(chestUUID);
+	public Backpack backpackGet(String backpackId) {
+		return this.backpacks.get(backpackId);
 	}
 	
 }
