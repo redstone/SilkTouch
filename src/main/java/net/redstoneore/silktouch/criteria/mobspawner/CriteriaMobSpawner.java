@@ -6,6 +6,7 @@ import org.spongepowered.api.item.ItemTypes;
 
 import net.redstoneore.silktouch.criteria.Criteria;
 import net.redstoneore.silktouch.criteria.CriteriaListener;
+import net.redstoneore.silktouch.criteria.EventInformation;
 
 public class CriteriaMobSpawner extends Criteria {
 
@@ -21,7 +22,7 @@ public class CriteriaMobSpawner extends Criteria {
 	// ----------------------------------------
 	
 	@Override
-	public Item alterItem(BlockSnapshot block, Item item) {
+	public Item alterItem(BlockSnapshot block, Item item, EventInformation eventInformation) {
 		if (item.getItemType() != ItemTypes.MOB_SPAWNER) return item;
 		
 		// TODO: Pending https://github.com/SpongePowered/SpongeCommon/pull/710
