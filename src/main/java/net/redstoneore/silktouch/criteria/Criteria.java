@@ -5,8 +5,10 @@ import org.spongepowered.api.entity.Item;
 
 public abstract class Criteria {
 	
-	public abstract Item alterItem(BlockSnapshot block, Item item);
+	// Request the criteria to alter an item
+	public abstract Item alterItem(BlockSnapshot block, Item item, EventInformation eventInformation);
 	
+	// Fetch a CriteriaListener, return null if none 
 	public abstract CriteriaListener getListener();
 	
 }

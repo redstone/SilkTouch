@@ -1,11 +1,12 @@
 package net.redstoneore.silktouch.criteria;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.spongepowered.api.Sponge;
 
-public class Criterias {
+public final class Criterias {
 
 	// ----------------------------------------
 	// SINGLETON & CONSTRUCT
@@ -13,6 +14,7 @@ public class Criterias {
 	
 	public static Criterias i = new Criterias();
 	public static Criterias get() { return i; }
+	protected Criterias() { } 
 	
 	// ----------------------------------------
 	// FIELDS
@@ -24,6 +26,7 @@ public class Criterias {
 	// METHODS
 	// ----------------------------------------
 	
+	// Add a criteria and register its listener
 	public void addCriteria(Criteria criteria) {
 		this.registeredCriterias.add(criteria);
 		
@@ -32,6 +35,7 @@ public class Criterias {
 		}
 	}
 	
+	// Remove a criteria and unregister its listener
 	public void removeCriteria(Criteria criteria) {
 		if (criteria.getListener() != null) {
 			Sponge.getEventManager().unregisterListeners(criteria.getListener());
@@ -40,8 +44,9 @@ public class Criterias {
 		this.registeredCriterias.remove(criteria);
 	}
 	
+	// Fetch a read only list of all criterias 
 	public List<Criteria> all() {
-		return new ArrayList<Criteria>(this.registeredCriterias);
+		return Collections.unmodifiableList(this.registeredCriterias);
 	}
 	
 }
