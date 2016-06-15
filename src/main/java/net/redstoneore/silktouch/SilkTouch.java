@@ -9,10 +9,12 @@ import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.game.state.GameInitializationEvent;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.plugin.PluginContainer;
+import org.spongepowered.api.scheduler.Task;
 
 import com.google.inject.Inject;
 
 import net.redstoneore.silktouch.store.Config;
+import net.redstoneore.silktouch.store.elements.Backpack;
 
 @Plugin(id = "net.redstoneore.silktouch", name = "SilkTouch")
 public class SilkTouch {
@@ -36,12 +38,16 @@ public class SilkTouch {
 	@Inject
 	private PluginContainer plugin;
 	
+	private Task.Builder taskBuilder;
+	
 	// ----------------------------------------
 	// METHODS
 	// ----------------------------------------
 	
 	@Listener
 	public void enable(GameInitializationEvent event) {
+		this.taskBuilder = Sponge.getScheduler().createTaskBuilder();
+		
 		try {
 			if ( ! Files.exists(privateConfigDir)) {
 				Files.createDirectories(privateConfigDir);
@@ -52,6 +58,9 @@ public class SilkTouch {
 		}
 				
 		Sponge.getEventManager().registerListeners(this, SilkTouchListener.get());
+		
+		// Add our adapter for backpack
+		Backpack.addAsAdapter();
 	}
 	
 	public void log(String msg) {
@@ -70,4 +79,7 @@ public class SilkTouch {
 		return this.privateConfigDir;
 	}
 	
+	public Task.Builder getTaskBuilder() {
+		return this.taskBuilder;
+	}
 }
