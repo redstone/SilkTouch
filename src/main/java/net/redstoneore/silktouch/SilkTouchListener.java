@@ -5,7 +5,9 @@ import java.util.Optional;
 import org.spongepowered.api.CatalogTypes;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.block.BlockSnapshot;
+import org.spongepowered.api.block.BlockState;
 import org.spongepowered.api.block.BlockType;
+import org.spongepowered.api.block.BlockTypes;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.data.manipulator.mutable.item.EnchantmentData;
 import org.spongepowered.api.data.meta.ItemEnchantment;
@@ -26,6 +28,7 @@ import org.spongepowered.api.item.inventory.ItemStack;
 
 import net.redstoneore.silktouch.criteria.Criteria;
 import net.redstoneore.silktouch.criteria.Criterias;
+import net.redstoneore.silktouch.criteria.EventInformation;
 import net.redstoneore.silktouch.store.Config;
 
 public class SilkTouchListener {
@@ -121,19 +124,40 @@ public class SilkTouchListener {
 						item.offer(Keys.ITEM_DURABILITY, block.get(Keys.ITEM_DURABILITY).get()); 
 					}
 					
+					EventInformation eventInformation = new EventInformation();
+					
 					// Go over our criterias
 					for (Criteria criteria : Criterias.get().all()) {
-						item = criteria.alterItem(block, item);
+						item = criteria.alterItem(block, item, eventInformation);
 					}
 					
-					// And drop it
-					block.getLocation().get().getExtent().spawnEntity(
-						item,
-						Cause.source(EntitySpawnCause.builder()
-							.entity(player)
-							.type(SpawnTypes.DROPPED_ITEM)
-							.build()
-						).build());
+					if (eventInformation.isCancelled()) {
+						event.setCancelled(true);
+						return;
+					}
+					
+					if (eventInformation.doClearDrops() || eventInformation.doHardClearDrops()) {
+						// remove all drops and continue with our own drop
+						
+						// cancel the event (stops drops and block break)
+						event.setCancelled(true);
+						
+						// set to air
+						block.getLocation().get().setBlockType(BlockTypes.AIR);
+					}
+					
+					// if its not a hard drop we can drop our own item
+					if ( ! eventInformation.doHardClearDrops()){
+						
+						// And drop it
+						block.getLocation().get().getExtent().spawnEntity(
+							item,
+							Cause.source(EntitySpawnCause.builder()
+								.entity(player)
+								.type(SpawnTypes.DROPPED_ITEM)
+								.build()
+							).build());
+					}
 				}
 			}
 		});
